@@ -11,22 +11,22 @@ L’objectif est de séparer strictement le kernel pur du passe-plat UEFI, tout 
 ## 🏗 Architecture globale et Boot Flow
 
 CPU Reset
-   │
-   ▼
+   
+   
 Kernel Microkernel Standalone
    - Initialise le hardware (UART, PIT, etc.)
    - Initialise le scheduler coopératif
    - Initialise la registry statique
    - Autres services internes
-   │
-   ▼ Appelle UEFI Shim
+   - Appelle UEFI Shim
+
 UEFI Shim
    - Transforme le kernel registry en EFI protocols
    - Initialise EFI_SYSTEM_TABLE
    - Expose BootServices & RuntimeServices
    - Permet aux applications EFI de fonctionner
-   │
-   ▼
+
+
 Applications EFI
    - Appellent uniquement les services exposés par le shim
 
