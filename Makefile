@@ -1,8 +1,8 @@
-# ==================================================
-# Makefile Phase 0 - openUEFI freestanding ELF -> Coreboot payload
-# ==================================================
+PREFIX?="$HOME/cross/i386-elf"
+TARGET=i386-elf
+export PATH="$PREFIX/bin:$PATH"
 
-CROSS = i386-elf-
+CROSS = $(TARGET)
 CC = $(CROSS)gcc
 LD = $(CROSS)ld
 OBJCOPY = $(CROSS)objcopy
@@ -22,13 +22,8 @@ SRC = $(SRC_KERNEL) $(SRC_UEFI) $(SRC_DRIVERS) $(SRC_LIB)
 ELF_OUT = openuefi.elf
 PAYLOAD = payload/openuefi.elf
 
-# ==================================================
-# Targets
-# ==================================================
-
 all: $(PAYLOAD)
 
-# Compile freestanding ELF
 $(ELF_OUT):
 	$(CC) $(CFLAGS) $(INCLUDE) $(SRC) -o $(ELF_OUT) $(LDFLAGS)
 
