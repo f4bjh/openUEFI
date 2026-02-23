@@ -65,3 +65,26 @@ Applications EFI
 - Le kernel peut évoluer (drivers, secure boot, SMM, etc.) sans toucher au shim  
 - Shim peut évoluer indépendamment pour ajouter de nouvelles interfaces UEFI  
 
+## 🔹 Execution
+
+```
+$ qemu-system-x86_64 \
+    -machine q35 \
+    -bios openuefi.bin \
+    -serial stdio \
+    -display none
+```
+
+## 🔹 pré-requis
+
+```
+sudo apt update
+sudo apt install build-essential gcc-multilib g++-multilib
+sudo apt install binutils
+sudo apt install gcc-x86-64-linux-gnu
+```
+
+```
+sudo apt install build-essential bison flex libgmp3-dev \
+                 libmpc-dev libmpfr-dev texinfo libisl-dev
+```
