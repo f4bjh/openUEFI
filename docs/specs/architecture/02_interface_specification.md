@@ -71,10 +71,13 @@
 
 ## 2. Services Provided
 
+ajouter une liste la plus exhaustive qui soit des services expose par mon BIOS
+
 - Memory allocation
 - Timer services
 - Interrupt routing
 - Console / debug output
+- exemple : mettre un lien implementation/runtime_services/gettime.md
 
 ## 3. Error Handling Model
 
