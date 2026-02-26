@@ -194,11 +194,38 @@ Develop a UEFI-compliant firmware from scratch, without using EDK2, based on a c
 ### 1.3 Logical view
 
 ```mermaid
-graph TD
-  A[OS] <--> B[UEFI Shim]
-  B <--> C[kernel]
-  C <--> D[hardware]
+graph LR
 
+    %% Colonne 1 : OS et Bootloader
+    subgraph COL_OS ["OS Layer"]
+        OS[External OS]
+        bootloader[External bootloader GRUB/EFI stub]
+    end
+
+    %% Colonne 2 : Sentinel + Shim
+    subgraph COL_SENTINEL ["Boot Layer"]
+        sentinel[Bootloader Sentinel - read only API]
+        shim[UEFI shim - EFI_SYSTEM_TABLE]
+    end
+
+    %% Colonne 3 : Kernel + HAL
+    subgraph COL_KERNEL ["Kernel Layer"]
+        HAL[Hardware abstraction layer - R/W on hardware devices]
+        kernel[Minimal microkernel - secured]
+    end
+
+    %% Colonne 4 : Hardware
+    HW[Hardware devices]
+
+    %% FLOW
+    bootloader --> OS
+    sentinel --> bootloader
+    shim <--> OS
+    shim --> sentinel
+    kernel --> shim
+    kernel --> sentinel
+    kernel <--> HAL
+    HAL <--> HW
 ```
 
 #### 1.3.1 Recommendations
