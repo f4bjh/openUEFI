@@ -52,3 +52,43 @@ tableau
 ### Security constraints
 - Pointer must be validated.
 - No direct hardware exposure.
+
+## 3. Function: enumerate_devices
+### Signature (conceptuelle)
+### Direction
+### Description
+### Input
+### Output
+### Memory ownership
+### Thread safety
+### Error handling
+
+## 4. Function: read_partition
+### Signature (conceptuelle)
+### Direction
+### Description
+### Input
+### Output
+### Memory ownership
+### Thread safety
+### Error handling
+
+## 5. Function: get_device_path
+### Signature (conceptuelle)
+### Direction
+### Description
+### Input
+### Output
+### Memory ownership
+### Thread safety
+### Error handling
+
+## 6. Function: compute_hash
+### Signature (conceptuelle)
+### Direction
+### Description
+### Input
+### Output
+### Memory ownership
+### Thread safety
+### Error handling
