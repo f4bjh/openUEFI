@@ -11,4 +11,13 @@ typedef enum {
     HAL_RTC_ERR_UNSUPPORTED
 } hal_rtc_status_t;
 
+typedef struct {
+   uint8_t sec;
+   uint8_t min;
+   uint8_t hour;
+   uint8_t day;
+   uint8_t mon;
+   uint8_t year;
+} hal_rtc_time_t;
+
 #endif
