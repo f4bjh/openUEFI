@@ -8,10 +8,10 @@ uint8_t hour;
 uint8_t date_of_the_month;
 uint8_t month;
 uint8_t year;
-} t_rtc_time;
+} rtc_time_t;
 	
 	
-errno_t fw_get_time(struct t_rtc_time *t);
+errno_t fw_get_time(rtc_time_t *t);
 
 
 #endif

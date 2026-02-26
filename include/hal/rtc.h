@@ -20,4 +20,8 @@ typedef struct {
    uint8_t year;
 } hal_rtc_time_t;
 
+hal_rtc_status_t hal_rtc_init(void);
+hal_rtc_status_t hal_rtc_get_time(hal_rtc_time_t *time);
+
+
 #endif
