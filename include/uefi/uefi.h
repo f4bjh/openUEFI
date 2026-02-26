@@ -37,5 +37,7 @@ typedef struct {
   BOOLEAN    SetsToZero;
 } EFI_TIME_CAPABILITIES;
 
+EFI_STATUS
+convert_errno_to_efistatus(int err);
 
 #endif

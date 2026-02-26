@@ -9,18 +9,33 @@ GetTime (
    OUT EFI_TIME_CAPABILITIES     *Capabilities OPTIONAL
   )
 {
-//TODO
+  rtc_time_t time;
+  errno_t errno;
+  EFI_STATUS Status;
 
-// must validate entry pointers
-//
  if (Time==NULL)
    return EFI_INVALID_PARAMETER;
 
-// call kernel [fw_get_time](kernel_runtime_interface.md#2)
-// manage error code status returned
-// fill EFI_TIME.Time output data
-// TBD : management of Capabilities
+ errno=fw_get_time(&time);
+
+ Status = convert_errno_to_efistatus(errno);
+
+ Time->Year = time.year;
+ Time->Month = time.month;
+ Time->Day = time.date_of_the_month;
+ Time->Hour = time.hour;
+ Time->Minute = time.minute;
+ Time->Second = time.second;
+
+ //following variable will have to be mananged when not using mc146818
+ Time->Pad1 = 0xFF;
+ Time->Nanosecond = 0;
+ Time->TimeZone = 0;
+ Time->Daylight = 0;
+ Time->Pad2;
+	 
+ // TBD and TODO : management of Capabilities
 
 
-  return EFI_SUCCESS;
+  return Status;
 }

@@ -49,6 +49,11 @@ void)
 	 return false;
 }
 
+static uint8_t 
+bcd_to_bin(uint8_t val) {
+    return (val & 0x0F) + ((val >> 4) * 10);
+}
+
 hal_rtc_status_t hal_rtc_init(void)
 {
 
@@ -76,9 +81,38 @@ hal_rtc_time_t *time
 
  mc146818_get_time(&rtc_time);
 
- //TODO
- //validate data ranges of rtc. Else return HAL_RTC_ERR_INVALID_DATA
- //convert BCD to binary internally if necessary. Else return HAL_RTC_ERR_HW_FAILURE
-
+ //convert BCD to binary internally if necessary.
+ if ( mc146818_read(MC146818_REGISTER_B) & BIT2) {
+  rtc_time.sec = bcd_to_bin(rtc_time.sec);
+  rtc_time.min = bcd_to_bin(rtc_time.min);
+  rtc_time.hour = bcd_to_bin(rtc_time.hour);
+  rtc_time.day = bcd_to_bin(rtc_time.day);
+  rtc_time.mon = bcd_to_bin(rtc_time.mon);
+  rtc_time.year = bcd_to_bin(rtc_time.year);
+ }
+ 
+ //validate data ranges of rtc. 
+ if (rtc_time.sec<0 || rtc_time.sec > 0x3B)
+   return HAL_RTC_ERR_INVALID_DATA;
+ if (rtc_time.min<0 || rtc_time.min > 0x3B)
+   return HAL_RTC_ERR_INVALID_DATA;
+ if (!(mc146818_read(MC146818_REGISTER_B) & BIT1)){ // mode 12H
+    if (rtc_time.hour>=0x81 && rtc_time.hour <= 0x8B)
+      rtc_time.hour -= 0x74;
+    else if (rtc_time.hour == 0x8C)
+      rtc_time.hour = 0;
+    else if (rtc_time.hour<0x01 && rtc_time.hour > 0x0C)
+      return HAL_RTC_ERR_INVALID_DATA;
+ } else {
+   if (rtc_time.hour<0x00 || rtc_time.hour > 0x17)
+      return HAL_RTC_ERR_INVALID_DATA;
+ }
+ if (rtc_time.day<0x01 || rtc_time.day > 0x1F)
+   return HAL_RTC_ERR_INVALID_DATA;
+ if (rtc_time.mon<0x01 || rtc_time.mon > 0x0C)
+   return HAL_RTC_ERR_INVALID_DATA;
+ if (rtc_time.year<0x00 || rtc_time.year > 0x63)
+   return HAL_RTC_ERR_INVALID_DATA;
+ 
  return HAL_RTC_OK;
 }
