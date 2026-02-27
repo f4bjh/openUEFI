@@ -32,7 +32,7 @@ GetTime (
  Time->Nanosecond = 0;
  Time->TimeZone = 0;
  Time->Daylight = 0;
- Time->Pad2;
+ Time->Pad2=0;
 	 
  // TBD and TODO : management of Capabilities
 
