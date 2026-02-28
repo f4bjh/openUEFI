@@ -19,7 +19,7 @@ GetTime (
 #### 2.1.2 Description
 Retrieve current RTC time from hardware abstraction layer.
 - must validate entry pointers
-- call kernel [fw_get_time](kernel_runtime_interface.md#2)
+- call kernel [mukernel_get_time](kernel_runtime_interface.md#2)
 - manage error code status returned
 - fill EFI_TIME.Time output data
 - TBD : management of Capabilities
