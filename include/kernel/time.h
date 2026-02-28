@@ -11,6 +11,6 @@ uint8_t year;
 } rtc_time_t;
 	
 	
-errno_t fw_get_time(rtc_time_t *t);
+errno_t mukernel_get_time(rtc_time_t *t);
 
 #endif

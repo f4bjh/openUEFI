@@ -1,7 +1,8 @@
 #ifndef SHIM_H
 #define SHIM_H
 
-void shim_init(void);
+errno_t shim_init(void);
+void shim_register(void);
 
 #endif
 
