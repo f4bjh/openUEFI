@@ -16,7 +16,7 @@ GetTime (
  if (Time==NULL)
    return EFI_INVALID_PARAMETER;
 
- errno=fw_get_time(&time);
+ errno=mukernel_get_time(&time);
 
  Status = convert_errno_to_efistatus(errno);
 
