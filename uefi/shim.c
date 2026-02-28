@@ -1,3 +1,4 @@
+#include "kernel/kernel.h"
 #include "kernel/errno.h"
 #include "drivers/uart.h"
 #include "uefi/UefiBaseType.h"
@@ -66,10 +67,18 @@ convert_errno_to_efistatus(int err)
     }
 }
 
-void shim_init(void) {
+errno_t shim_init(void) {
     uart_puts("==== UEFI Shim Initialized ====\n");
 
     // Passe-plat fictif vers EFI
     system_table.BootServices = (void*)0xdeadbeef;
     system_table.RuntimeServices = (void*)0xcafebabe;
 }
+
+void 
+shim_register(void) 
+{
+
+    mukernel_register_interface(&shim_init);
+}
+
