@@ -73,12 +73,23 @@ errno_t shim_init(void) {
     // Passe-plat fictif vers EFI
     system_table.BootServices = (void*)0xdeadbeef;
     system_table.RuntimeServices = (void*)0xcafebabe;
+
+
+    return 0;
 }
 
-void 
+mukernel_err_status_t 
 shim_register(void) 
 {
+  errno_t errno;
 
-    mukernel_register_interface(&shim_init);
+  errno= mukernel_register_interface(&shim_init);
+
+  if (errno == EALREADY)
+    return MUKERNEL_ERR_ALREADY_REGISTERED;
+  if (errno == EINVAL)
+    return MUKERNEL_ERR_INTERNAL;
+
+  return MUKERNEL_OK;
 }
 
