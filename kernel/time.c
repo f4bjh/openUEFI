@@ -3,7 +3,7 @@
 #include "hal/rtc.h"
 
 
-errno_t fw_get_time(rtc_time_t *t)
+errno_t mukernel_get_time(rtc_time_t *t)
 {
 
  hal_rtc_time_t time;
