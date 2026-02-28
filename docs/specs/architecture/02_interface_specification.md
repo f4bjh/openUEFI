@@ -18,7 +18,7 @@
 |                                                          |
 |  GetValue()                                              |
 |     ↓                                                    |
-|  fw_get_value(&value)      <--- pointeur vers API kernel |
+|  mukernel_get_value(&value)      <--- pointeur vers API kernel |
 +----------------------------▲-----------------------------+
                              |
                              | API interne stable
@@ -30,7 +30,7 @@
 |  - Protection des structures partagées                  |
 |  - Logique minimale                                     |
 |                                                         |
-|  fw_get_value(struct type_of_value *value)              |
+|  mukernel_get_value(struct type_of_value *value)              |
 |     ↓                                                   |
 |  hal_hw_get_value(value)                                |
 +----------------------------▲-----------------------------+

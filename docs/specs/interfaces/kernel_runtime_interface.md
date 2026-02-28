@@ -3,10 +3,10 @@
 ## 1. Purpose
 Expose minimal runtime services to the UEFI shim.
 
-## 2. Function: fw_get_time
+## 2. Function: mukernel_get_time
 
 ### Signature (conceptuelle)
-errno_t fw_get_time(struct rtc_time *t)
+errno_t mukernel_get_time(struct rtc_time *t)
 
 ### Direction
 Caller : Shim 

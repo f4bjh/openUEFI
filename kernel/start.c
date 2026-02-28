@@ -1,7 +1,21 @@
+#include "start.h"
 #include "kernel/kernel.h"
-#include "drivers/uart.h"
+#include "uefi/shim.h"
 
 void _start(void) {
-    uart_puts("Hello from kernel task!\n");
-    kernel_init();
+mukernel_err_status_t mukernel_status;
+    
+    mukernel_status = mukernel_init();
+    if (mukernel_status)
+	return ;
+
+    mukernel_status = shim_register();
+    if (mukernel_status)
+	return ;
+
+
+    mukernel_status = mukernel_start();
+    if (mukernel_status)
+	return ;
 }
+
