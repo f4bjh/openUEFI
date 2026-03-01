@@ -38,7 +38,7 @@ mukernel_err_status_t mukernel_start(void)
 
 
    //call initialisation function of upper layer
-   if (!mukernel.f_init()){
+   if (!(mukernel.f_init)){
      DEBUG_ERR("no init function have registered\n");
      mukernel_panic();
    }
