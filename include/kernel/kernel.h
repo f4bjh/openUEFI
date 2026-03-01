@@ -44,6 +44,5 @@ void _start(void);
 mukernel_err_status_t mukernel_init(void);
 mukernel_err_status_t mukernel_start(void);
 errno_t mukernel_register_interface(f_init_t*);
-void mukernel_panic(void);
 
 #endif
