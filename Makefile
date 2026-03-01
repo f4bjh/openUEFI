@@ -8,7 +8,7 @@ LDFLAGS = -T link.ld -nostdlib -static
 
 INCLUDE = -Iinclude 
 
-SRC_KERNEL = kernel/start.c kernel/kernel.c kernel/time.c kernel/io/io.c
+SRC_KERNEL = kernel/start.c kernel/kernel.c kernel/time.c kernel/io/io.c kernel/debug.c
 SRC_UEFI = uefi/shim.c uefi/runtime_services.c
 SRC_DRIVERS = drivers/uart/uart.c drivers/rtc/mc146818/mc146818.c
 SRC_LIB = lib/printf.c lib/string.c
