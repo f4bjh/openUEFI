@@ -72,7 +72,7 @@ make
 
 ```
 $ qemu-system-x86_64 \
-		-bios coreboot.rom \
+		-bios build/coreboot.rom \
 		-serial stdio 
 ```
 
