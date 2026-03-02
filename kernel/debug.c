@@ -1,4 +1,4 @@
-#include <stdarg.h> 
+#include "kernel/kernel.h"
 #include "kernel/debug.h"
 #include "drivers/uart.h"
 
@@ -43,45 +43,29 @@ const char *level,
 const char *file,
 const char *func,
 int line,
-const char *fmt, ...)
+const char *trace)
 {
-   char buf[16];
-   va_list args;
+   char buf[4];
   
-
-//TODO find a way to a smarter log implementation with format input data (%d, %s, and so on...)
-
     uart_puts("[openUEFI/mukernel][");
  
-    uart_puts(level);
+    if (level)
+     uart_puts(level);
     uart_puts("] ");
  
-    va_start(args, fmt);
-    uart_puts(args);
-    va_end(args);
-    uart_puts(" ");
- 
-
-
-
-    uart_puts(file);
+    if (file)
+      uart_puts(file);
     uart_puts(":");
 
-    itoa_dec(line, buf);
-    uart_puts(buf);
+    if (line<=9999) {    
+      itoa_dec(line, buf);
+      uart_puts(buf);
+    }
     uart_puts(" in ");
 
+    if (func)
+      uart_puts(func);
+    uart_puts(" ");
 
-    uart_puts(func);
-
-
-#if 0
-    TODO
-    va_list args;
-    va_start(args, fmt);
-    vprintf(fmt, args);
-    va_end(args);
-#endif
-
-    uart_puts("\n");
+    uart_puts(trace);
 }
