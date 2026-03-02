@@ -9,7 +9,7 @@ static mukernel_t mukernel={
 static void mukernel_panic(void) 
 {
   mukernel.state =  MUKERNEL_STOPPED;
-  DEBUG_ERR("!!! mukernel panic  !!!\n");
+  DEBUG_ERR("!!! panic  !!!\n");
   while(1);
 }
 
@@ -21,7 +21,7 @@ mukernel_err_status_t mukernel_init(void)
    //ici il y aura sans doute a terme init de la MMU
    //enum PCIe
    //...
-   DEBUG_INFO("ukernel fw initialized!\n");
+   DEBUG_INFO("mukernel initialized\n");
 
    mukernel.state = MUKERNEL_INITIALISED;
    return MUKERNEL_OK;
@@ -31,7 +31,7 @@ mukernel_err_status_t mukernel_start(void)
 {
   errno_t errno;
 
-   DEBUG_INFO("ukernel fw starting!\n");
+   DEBUG_INFO("mukernel starting\n");
 
    if ( mukernel.state != MUKERNEL_INTERFACE_REGISTERED)
      return MUKERNEL_ERR_INVALID_STATE;
@@ -39,7 +39,7 @@ mukernel_err_status_t mukernel_start(void)
 
    //call initialisation function of upper layer
    if (!(mukernel.f_init)){
-     DEBUG_ERR("no init function have registered\n");
+     DEBUG_ERR("no init function have been registered by mukernel\n");
      mukernel_panic();
    }
 
@@ -51,7 +51,7 @@ mukernel_err_status_t mukernel_start(void)
 
 
    mukernel.state =  MUKERNEL_STARTED;
-   DEBUG_INFO("ukernel fw finished!\n");
+   DEBUG_INFO("mukernel finished\n");
 
 
    mukernel.state =  MUKERNEL_STOPPED;
@@ -67,7 +67,7 @@ errno_t mukernel_register_interface(f_init_t *f_init)
      return EINVAL; 
      
    if (mukernel.state != MUKERNEL_INITIALISED){
-	DEBUG_ERR("try to register an init function while mukernel have not been registered");
+	DEBUG_ERR("try to register an init function while mukernel have not been initialised");
 	mukernel_panic();
    }
 
