@@ -160,12 +160,13 @@ openUEFI is minimal harderned microkernel that offers a controled and secured ex
 
 ```mermaid
 graph TD
-  A[external hw initialisation] --> B[hardened openUEFI microkernel]
+  A[external hw initialisation] --> B[microkernel]
   B  --> C[sentinel]
   C <--> D[external payload]
 ```
 
-Micorkernel is protecting. Sentinel is deciding. Payload is isolated
+
+Microkernel is protecting. Sentinel is deciding. Payload is isolated
 
 #### 1.2.1 Primary objectives
 
@@ -200,17 +201,87 @@ openUEFI is not :
 
 ## 2. Assumptions
 
-- The underlying firmware is considered untrusted and outside the Trusted Computing Base.
+The underlying firmware is considered untrusted and outside the Trusted Computing Base.
 openUEFI assumes the platform has been correctly initialized but does not rely on any security guarantees provided by the firmware.
+CPU is running correctly, and RAM is accessible and working fine. Hardware has been initialised by an external firmware (coreboot, EDK2,...)
+The underlying firmware is not an active attaquant.
 
 ## 3. Threat Model
 ### 3.1 Assets
+OpenUEFI guarantees
+
+- Integrity of microkernel
+- Integrity of Sentinel
+- Integrity of boot
+- Integrity of memory
+
+- Confidentialité ?
+- Chaîne de démarrage ?
+
 ### 3.2 Adversaries
+
+- local (USB, disque)
+- supply-chain (modified bootloader)
+- external payload
+
+- Attaquant firmware ?
+- Attaquant physique ?
+
+Pour chacun :
+- Capacités
+- Limites
 ### 3.3 Out of Scope
+Exemples :
+
+- Attaques matérielles physiques
+- Firmware malveillant actif
+- CPU compromis
+- Side-channel
+
 # 4. Trusted Computing Base
+The trusted computing base (TCB) of a computer system is the set of all hardware, firmware, and/or software components that are critical to its security, in the sense that bugs or vulnerabilities occurring inside the TCB might jeopardize the security properties of the entire system. By contrast, parts of a computer system that lie outside the TCB must not be able to misbehave in a way that would leak any more privileges than are granted to them in accordance to the system's security policy.
+
+## 4.1 Inside TCB
+Their correctness/reliability is essential to ensure that the system’s security policies are enforced.  
+
+- microkernel : secured by design.
+- sentinel : will decide if operations are allowed or not)
+- uefi shim (if it remains in project. probably yes, because we will boot on coreboot for hw initialisation at first). will provide UEFI compliance based on hardware accesses
+
+## 4.2 Outside TCB
+They are “untrusted by design,” and the system must strictly confine their privileges to prevent faults from resulting in security breaches.
+
+- external firmware (hw initialisation)
+- external payload : cannot be trusted at all...
+- CPU 
+- RAM 
+
+- TPM ?
+
+par contre, je me demande comment on va pouvoir bloquer les access de tout ce qui n'est pas dans la TCB...
+
 # 5. Security Invariants
+Exemples d’invariants possibles :
+
+- Le microkernel n’écrit jamais sur disque
+- Le Sentinel ne peut pas modifier le microkernel
+- Les binaires chargés sont read-only
+- Aucun code non validé n’est exécuté
+- La memory map est reconstruite indépendamment du firmware
+
 # 6. Security Goals
+
+- Détecter toute modification binaire => checksum ?
+- Empêcher exécution hors zone autorisée => il faudra demander l'autorisation au sentinel ?
+- Refuser tout binaire non validé => mecanisme de signature, etc...
+- Journaliser toute violation
+
 # 7. Security Non-Goals
+- openUEFI n’est pas un OS
+- openUEFI n’est pas un hyperviseur
+- openUEFI ne garantit pas la confidentialité des données utilisateur
+- openUEFI ne protège pas contre un firmware malveillant
+
 
 ## 2. Scope
 
