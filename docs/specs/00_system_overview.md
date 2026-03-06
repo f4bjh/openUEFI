@@ -251,6 +251,8 @@ Their correctness/reliability is essential to ensure that the system’s securit
 ## 4.2 Outside TCB
 They are “untrusted by design,” and the system must strictly confine their privileges to prevent faults from resulting in security breaches.
 
+- sentinel : will decide if loading is allowed or not. It is a privilegied component, but not trusted.
+- uefi shim (if it remains in project. probably yes, because we will boot on coreboot for hw initialisation at first). will provide UEFI compliance based on hardware accesses
 - external firmware (hw initialisation)
 - external payload : cannot be trusted at all...
 - CPU 
