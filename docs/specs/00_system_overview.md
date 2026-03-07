@@ -10,7 +10,6 @@ Here we kindly remind what are the historical functionnality that BIOS implement
 These are the functions without which a system cannot boot correctly.
 
 ##### 1.1.1.1 Minimal Hardware Initialization (Hardware Init)
-The firmware MUST:  
 
 - Initialize the CPU (operating mode, microcode)
 - Initialize system RAM (memory training)
@@ -22,7 +21,6 @@ The firmware MUST:
 Without these steps → execution of any code is impossible.  
 
 ##### 1.1.1.2 POST (Power-On Self-Test)
-The firmware MUST:  
 
 - Verify the presence of system RAM
 - Detect critical hardware errors
@@ -30,7 +28,6 @@ The firmware MUST:
 - Report fatal errors (beep codes, LEDs, logs)
 
 ##### 1.1.1.3 Firmware Storage Management
-The BIOS MUST:
 
 - Read its own firmware image from flash storage
 - Manage variable storage (NVRAM / UEFI variables)
@@ -38,7 +35,6 @@ The BIOS MUST:
 
 
 ##### 1.1.1.4 Bootloader Selection and Loading
-This is an ABSOLUTELY central function:  
 
 - Locate a bootable device
 - Load a boot sector (legacy BIOS)
@@ -46,7 +42,6 @@ This is an ABSOLUTELY central function:
 - Transfer control to the operating system
 
 ##### 1.1.1.5 Firmware-to-OS Interface Provision
-The firmware MUST expose:
 
 In legacy BIOS mode:  
 Interrupt services (e.g., INT 13h disk services, INT 10h video services, etc.)
@@ -61,7 +56,6 @@ In UEFI mode:
 
 ##### 1.1.2.1 ACPI Management
 
-The firmware MUST provide:
 
 - ACPI tables
 - Device descriptions
@@ -71,14 +65,12 @@ The firmware MUST provide:
 Without ACPI → a modern operating system is not usable.
 
 ##### 1.1.2.2 Multiprocessor Management
-The firmware MUST:  
 
 - Start Application Processors (AP cores)
 - Configure SMP (Symmetric Multiprocessing)
 - Provide MADT (ACPI) tables
 
 ##### 1.1.2.3 Device Configuration
-The firmware MUST perform:  
 
 - PCI / PCIe enumeration
 - BAR (Base Address Register) allocation
@@ -86,7 +78,6 @@ The firmware MUST perform:
 - Bus management
 
 ##### 1.1.2.4 Advanced Memory Management
-The firmware MUST provide:  
 
 - A complete memory map
 - Reserved memory regions
@@ -95,7 +86,6 @@ The firmware MUST provide:
 
 
 ##### 1.1.2.5 Minimum Security Management
-A modern firmware MUST:  
 
 - Support Secure Boot (in a UEFI environment)
 - Verify bootloader signatures
@@ -103,10 +93,8 @@ A modern firmware MUST:
 
 
 #### 1.1.3 Expected Functions on a Modern UEFI Platform
-On a UEFI-compliant platform, the firmware MUST also provide:  
 
 ##### 1.1.3.1 Variable Services
-The firmware MUST implement:  
 
 - GetVariable
 - SetVariable
@@ -114,21 +102,18 @@ The firmware MUST implement:
 - Authenticated variables support
 
 ##### 1.1.3.2 EFI Driver Management
-The firmware MUST:  
 
 - Load EFI drivers
 - Manage EFI protocols
 - Dispatch drivers through the EFI driver model
 
 ##### 1.1.3.3 Firmware Console
-The firmware MUST provide:  
 
 - Text output services
 - Keyboard input services
 - A setup utility (BIOS Setup interface)
 
 ##### 1.1.3.4 Boot Option Management
-The firmware MUST manage:  
 
 - BootOrder
 - Boot#### variables
@@ -136,7 +121,6 @@ The firmware MUST manage:
 - BootNext
 
 ##### 1.1.3.5 Capsule Update
-The firmware MUST support:  
 
 - Firmware update via capsule mechanism
 - Rollback management
@@ -145,8 +129,6 @@ The firmware MUST support:
 #### 1.1.4￼Advanced Security Functions
 Strongly recommended in modern platforms:
 
-The firmware SHOULD provide:
-
 - Measured Boot support
 - TPM interaction
 - PCR measurements
@@ -154,7 +136,6 @@ The firmware SHOULD provide:
 - Flash write protection mechanisms
 
 #### 1.1.5 Power Management Functions
-The firmware SHOULD support:
 
 - ACPI power states S0 / S3 / S4 / S5
 - Wake-on-LAN
@@ -162,7 +143,6 @@ The firmware SHOULD support:
 - Basic thermal management
 
 #### 1.1.6 Optional but Commonly Implemented Functions
-The firmware MAY provide:
 
 - PXE boot support
 - USB boot support
@@ -174,89 +154,135 @@ The firmware MAY provide:
 ￼
 
 ### 1.2 Project objective of openUEFI
-Develop a UEFI-compliant firmware from scratch, without using EDK2, based on a clear, modular, and extensible microkernel architecture.
+
+openUEFI is minimal harderned microkernel that offers a controled and secured execution environnement for external binary loading.
+
+
+```mermaid
+graph TD
+  A[external hw initialisation] --> B[microkernel]
+  B  --> C[sentinel]
+  C <--> D[external payload]
+```
+
+
+Microkernel is protecting. Sentinel is deciding. Payload is isolated
 
 #### 1.2.1 Primary objectives
-- Simplify the build system
-- Reduce structural complexity
-- Achieve a deep understanding of the UEFI architecture
-- Create a modern and maintainable alternative implementation
 
+- Minimal secure execution environment 
+- Secure loader framework 
+- Hardened microkernel
+
+
+openUEFI is not : 
+- a concurrent and complete UEFI firmware
+- an alternative solutiont to coreboot
+- a bootloader (like GRUB)
 
 #### 1.2.2 Strategic Objectives
 
 - Minimalist firmware (< X LOC)
+- Simplify the build system
+- Reduce structural complexity
 - Compatible with Linux HPC environments
 - Minimal attack surface
-- Complete and correct ACPI implementation
-- Essential UEFI compliance
 
-### 1.3 Logical view
+#### 1.2.3 Supported architectures
 
-```mermaid
-graph LR
+- x86_64
+- AARCH64
 
-    %% Colonne 1 : OS et Bootloader
-    subgraph COL_OS ["OS Layer"]
-        OS[External OS]
-        bootloader[External bootloader GRUB/EFI stub]
-    end
-
-    %% Colonne 2 : Sentinel + Shim
-    subgraph COL_SENTINEL ["Boot Layer"]
-        sentinel[Bootloader Sentinel - read only API]
-        shim[UEFI shim - EFI_SYSTEM_TABLE]
-    end
-
-    %% Colonne 3 : Kernel + HAL
-    subgraph COL_KERNEL ["Kernel Layer"]
-        HAL[Hardware abstraction layer - R/W on hardware devices]
-        kernel[Minimal microkernel - secured]
-    end
-
-    %% Colonne 4 : Hardware
-    HW[Hardware devices]
-
-    %% FLOW
-    bootloader --> OS
-    sentinel --> bootloader
-    shim <--> OS
-    shim --> sentinel
-    kernel --> shim
-    kernel --> sentinel
-    kernel <--> HAL
-    HAL <--> HW
-```
-
-#### 1.3.1 Recommendations
-
-##### 1.3.1.1 kernel
-
-Kernel must remain minimal. So, kernel must only implement : 
-
-- correct initialisation of the plateforme
-- guarantee securirty
-- generate correct ACPI tables
-- furnish correct data to UEFI shim
+- Qemu
+- _to be defined : some hardware boards_
 
 
-| Level                | Recommandations  |
-| -------------------- | ---------------- |
-| code organisation    | Micro-modularity |
-| Compilation          | Static           |
-| Runtime              | Monolithic       |
-| Scheduler            | None             |
-| IPC                  | None             |
-| Dynamic load         | No               |
 
 
-##### 1.3.1.2 UEFI Shim
+## 2. Assumptions
 
-- expose EFI System Table
-- expose Boot Services essentiels
-- expose minimal Runtime Services 
-- furnish pointers to ACPI tables
-- translate UEFI calls into internal kernel structures
+The underlying firmware is considered untrusted and outside the Trusted Computing Base.
+openUEFI assumes the platform has been correctly initialized but does not rely on any security guarantees provided by the firmware.
+CPU is running correctly, and RAM is accessible and working fine. Hardware has been initialised by an external firmware (coreboot, EDK2,...)
+The underlying firmware is not an active attaquant.
+
+## 3. Threat Model
+### 3.1 Assets
+OpenUEFI guarantees
+
+- Integrity of microkernel
+- Integrity of Sentinel
+- Integrity of boot
+- Integrity of memory
+
+- Confidentialité ?
+- Chaîne de démarrage ?
+
+### 3.2 Adversaries
+
+- local (USB, disque)
+- supply-chain (modified bootloader)
+- external payload
+
+- Attaquant firmware ?
+- Attaquant physique ?
+
+Pour chacun :
+- Capacités
+- Limites
+### 3.3 Out of Scope
+Exemples :
+
+- Attaques matérielles physiques
+- Firmware malveillant actif
+- CPU compromis
+- Side-channel
+
+# 4. Trusted Computing Base
+The trusted computing base (TCB) of a computer system is the set of all hardware, firmware, and/or software components that are critical to its security, in the sense that bugs or vulnerabilities occurring inside the TCB might jeopardize the security properties of the entire system. By contrast, parts of a computer system that lie outside the TCB must not be able to misbehave in a way that would leak any more privileges than are granted to them in accordance to the system's security policy.
+
+## 4.1 Inside TCB
+Their correctness/reliability is essential to ensure that the system’s security policies are enforced.  
+
+- microkernel : secured by design.
+- sentinel : will decide if operations are allowed or not)
+- uefi shim (if it remains in project. probably yes, because we will boot on coreboot for hw initialisation at first). will provide UEFI compliance based on hardware accesses
+
+## 4.2 Outside TCB
+They are “untrusted by design,” and the system must strictly confine their privileges to prevent faults from resulting in security breaches.
+
+- sentinel : will decide if loading is allowed or not. It is a privilegied component, but not trusted.
+- uefi shim (if it remains in project. probably yes, because we will boot on coreboot for hw initialisation at first). will provide UEFI compliance based on hardware accesses
+- external firmware (hw initialisation)
+- external payload : cannot be trusted at all...
+- CPU 
+- RAM 
+
+- TPM ?
+
+par contre, je me demande comment on va pouvoir bloquer les access de tout ce qui n'est pas dans la TCB...
+
+# 5. Security Invariants
+Exemples d’invariants possibles :
+
+- Le microkernel n’écrit jamais sur disque
+- Le Sentinel ne peut pas modifier le microkernel
+- Les binaires chargés sont read-only
+- Aucun code non validé n’est exécuté
+- La memory map est reconstruite indépendamment du firmware
+
+# 6. Security Goals
+
+- Détecter toute modification binaire => checksum ?
+- Empêcher exécution hors zone autorisée => il faudra demander l'autorisation au sentinel ?
+- Refuser tout binaire non validé => mecanisme de signature, etc...
+- Journaliser toute violation
+
+# 7. Security Non-Goals
+- openUEFI n’est pas un OS
+- openUEFI n’est pas un hyperviseur
+- openUEFI ne garantit pas la confidentialité des données utilisateur
+- openUEFI ne protège pas contre un firmware malveillant
 
 
 ## 2. Scope
@@ -272,31 +298,6 @@ Kernel must remain minimal. So, kernel must only implement :
 - _to be defined : some hardware boards_
 
 
-## 3. High-Level Boot Flow
-
-### 3.1 Reset vector entry
-_to be defined_
-### 3.2 Kernel initialization
-_to be defined_
-
-### 3.3 Handoff to UEFI shim
-_to be defined_
-
-
-## 4. Design Principles
-_to be defined_
-
-
-### 4.1 Minimal TCB
-_to be defined_
-
-
-### 4.2 Deterministic execution
-_to be defined_
-
-
-### 4.3 Hardware abstraction boundaries
-_to be defined_
 
 
 ### 4.4 Security-first approach
