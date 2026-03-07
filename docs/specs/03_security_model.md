@@ -86,11 +86,66 @@ Key characteristics:
 - Reliability and immutability: measurements are append-only and protected against tampering.
 - Independent verification basis: allows trusted components, such as the Sentinel, to validate system integrity without relying on untrusted components.
 
-1. Project Intent
-2. Assumptions
-3. Threat Model
-4. Trusted Computing Base
-5. Architectural Security Principles
-6. Security Invariants
-7. Compatibility Scope
-8. Out of Scope
+## 1. Security Goals
+
+This section defines the security properties that the openUEFI architecture aims to guarantee.
+
+The design follows a minimalist security philosophy: the trusted computing base is intentionally kept small, and untrusted components are confined by design. Security decisions are explicit, deterministic, and observable.
+
+The goals described in this section define what the system guarantees, not how those guarantees are implemented. The mechanisms enforcing these properties are described in later sections.
+
+The security model is structured around three fundamental principles:
+
+Execution Control — ensuring that only authorized code may execute.
+
+Isolation — ensuring that executing code cannot exceed its assigned privileges.
+
+Observability — ensuring that the boot process can be verified and audited.
+
+### 1.1 Execution Control
+
+The system must ensure that code execution during the boot process is strictly controlled and governed by explicit security policy decisions.
+
+No code may be executed without explicit authorization. All transitions of execution during the boot process must be validated according to the system's security policy.
+
+The integrity of the boot process must be preserved. The system must guarantee that the code being executed corresponds exactly to the code that has been authorized. Unauthorized modifications, substitutions, or injections of executable code must be detectable and preventable.
+
+Security decisions governing the boot process must be taken by a clearly identified component responsible for enforcing boot policy. This ensures that the authority responsible for permitting execution is explicit and unambiguous.
+
+Boot decisions must be deterministic for a given system state. Identical inputs and system conditions must lead to identical execution decisions. This deterministic behavior improves predictability and facilitates security analysis and auditing.
+
+Execution authorization must be governed by an explicit security policy. The policy defines which code may be executed and under which conditions, ensuring that execution control remains transparent and verifiable.
+
+### 1.2 Isolation
+
+The system must ensure that code execution cannot compromise the integrity of the platform, even when that code has been authorized to run.
+
+Authorized code must not automatically be considered trusted. Code that is permitted to execute must still operate within strictly defined privilege boundaries.
+
+Payloads executed during the boot process are considered untrusted by design. The system must enforce isolation mechanisms that prevent payloads from exceeding their assigned privileges or interfering with critical components.
+
+The integrity of the core system components must be preserved. In particular, components responsible for enforcing security decisions must be protected against modification or interference by executing payloads.
+
+The trusted computing base must remain as small as possible. Minimizing the amount of code that must be trusted reduces the attack surface and improves the feasibility of auditing and verification.
+
+### 1.3 Observability
+
+The system must ensure that the boot process can be observed and verified.
+
+The execution of critical components must be measurable in order to provide evidence of the system state during the boot process. Measurements must allow verification that the expected components have been executed.
+
+The system must provide sufficient information to allow auditing of the boot process. An observer must be able to reconstruct and verify the sequence of execution decisions that occurred during system initialization.
+
+Security decisions made during the boot process must be traceable. It must be possible to determine why a particular execution decision was made and which components were involved.
+
+This observability property enables the verification of system integrity and supports security analysis and auditing.
+
+## 2. Threat Model
+## 3. Trusted Computing Base
+## 4. Security Architecture
+## 5. Isolation Model
+## 6. Measured Boot
+## 7. Boot Policy Enforcement
+## 8. Security Invariants
+## 9. Assumptions and Limitations
+## 10. Open Questions
